@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.dao.IUserDao">
+    <select id="queryUserLogin" parameterType="map" resultType="int">
+        select count(1) from user where username=#{username} and password=#{password}
+    </select>
+    <select id="queryUserByUsername" parameterType="map" resultType="User">
+        select * from user where username=#{username}
+    </select>
+    <select id="queryUserById" parameterType="map" resultType="User">
+        select * from user where id=#{id}
+    </select>
+    <insert id="insertUser" parameterType="map">
+        insert into user (password,username,avatar)
+        select  #{password} ,#{username},"http://127.0.0.1:8000/imageStream/getImage/avatar.hello/jpg"
+        from dual where NOT EXISTS(SELECT 1 FROM user
+        WHERE username=#{username})
+    </insert>
+    <update id="updateUserInfo" parameterType="map">
+        update user
+        <set>
+            <if test="username!= null and username != '' ">
+                username = #{username},
+            </if>
+            <if test="password!= null and password!= '' ">
+                password = #{password},
+            </if>
+        </set>
+        where id = #{id} and not exists(
+        SELECT * FROM (SELECT 1 FROM user
+        WHERE username=#{username} AND id != #{id}) as t)
+    </update>
+    <update id="updateUserAvatar" parameterType="map">
+        update user set
+        avatar = #{avatar}
+        where id=#{id}
+    </update>
+    <select id="queryReadHistory" parameterType="map" resultType="int">
+        select article_id from read_article where user_id=#{user_id}
+    </select>
+</mapper>

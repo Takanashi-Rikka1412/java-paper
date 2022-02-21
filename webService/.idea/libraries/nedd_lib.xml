@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="nedd_lib">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../../../java_lib/nedd_lib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../../../../java_lib/nedd_lib" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../../../../java_lib/nedd_lib" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../../../../java_lib/nedd_lib" recursive="false" type="SOURCES" />
+  </library>
+</component>

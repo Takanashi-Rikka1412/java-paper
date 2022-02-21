@@ -1,0 +1,26 @@
+#
+#Sat Dec 25 13:36:59 GMT+08:00 2021
+net.service.impl.LoginServiceImpl=org.springframework.stereotype.Component
+net.config.TimeConfig=org.springframework.stereotype.Component
+net.config.KeysConfig=org.springframework.stereotype.Component
+net.config.HotRankConfig=org.springframework.stereotype.Component
+net.controller.HelloController.SearchController=org.springframework.stereotype.Component
+net.controller.HelloController.CommentController=org.springframework.stereotype.Component
+net.service.impl.SearchServiceImpl=org.springframework.stereotype.Component
+net.controller.HelloController.ArticleListController=org.springframework.stereotype.Component
+net.config.MinioConfig=org.springframework.stereotype.Component
+net.config.ImageAuthConfig=org.springframework.stereotype.Component
+net.controller.HelloController.ArticleController=org.springframework.stereotype.Component
+net.service.impl.QueryServiceImpl=org.springframework.stereotype.Component
+net.controller.HelloController.UserController=org.springframework.stereotype.Component
+net.service.impl.CategoryServiceImpl=org.springframework.stereotype.Component
+net.service.impl.RegisterServiceImpl=org.springframework.stereotype.Component
+net.service.impl.CommentServiceImpl=org.springframework.stereotype.Component
+net.util.MinioImageUtil=org.springframework.stereotype.Component
+net.config.RegexConfig=org.springframework.stereotype.Component
+net.service.impl.MinioServiceImpl=org.springframework.stereotype.Component
+net.controller.FileController.ImageStreamController=org.springframework.stereotype.Component
+net.controller.FileController.ImageController=org.springframework.stereotype.Component
+net.service.impl.ArticleServiceImpl=org.springframework.stereotype.Component
+net.config.HomepageConfig=org.springframework.stereotype.Component
+net.controller.HelloController.TableController=org.springframework.stereotype.Component

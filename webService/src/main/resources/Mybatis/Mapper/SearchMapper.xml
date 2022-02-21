@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.dao.ISearchDao">
+    <select id="queryArticle" parameterType="map" resultType="Article">
+        select * from article
+        where
+          is_a_draft = 0
+        and
+          (upper(title) like BINARY CONCAT('%',upper(#{key}),'%')
+        or
+          upper(content) like BINARY CONCAT('%',upper(#{key}),'%'))
+        <if test="category!= null and category!= '' ">
+          and category = #{category}
+        </if>
+        <if test="date1!= null and date2!= null ">
+            and publish_time >= #{date1} and publish_time &lt;= #{date2}
+        </if>
+        <if test="tag!= null and tag != '' ">
+            and tag like BINARY CONCAT('%',#{tag},'%')
+        </if>
+        order by
+        case
+        when upper(title) like BINARY CONCAT('%',upper(#{key}),'%')
+        then length(REPLACE(upper(title),upper(#{key}),'')) * 1.0/length(title)
+        else 1
+        end,
+        case
+        when upper(content) like BINARY CONCAT('%',upper(#{key}),'%')
+        then length(REPLACE(upper(content),upper(#{key}),'')) * 1.0 /length(content)
+        else 1
+        end
+    </select>
+    <select id="queryHot" parameterType="map" resultType="Article">
+        select * from article
+        where is_a_draft = 0
+        <if test="category!= null and category!= '' ">
+            and category = #{category}
+        </if>
+        order by
+        (page_view / #{viewDivRatio} + (
+            SELECT count(1) FROM comment
+            WHERE comment.article_id = article.id
+        ) * #{commentRatio} )/ pow(timestampdiff(HOUR,publish_time,now()) +2,#{timeGravity}) desc
+    </select>
+    <select id="querySearchHistory" parameterType="map" resultType="String">
+        select search_key from search_list where user_id=#{user_id}
+        order by search_time desc
+    </select>
+    <update id="updateSearchHistory" parameterType="map">
+        update search_list
+        set search_time = #{search_time}
+        where user_id = #{user_id} and search_key = #{search_key}
+    </update>
+    <insert id="insertSearchHistory" parameterType="map">
+        insert into search_list(user_id,search_key,search_time)
+        values(#{user_id}, #{search_key}, #{search_time})
+    </insert>
+
+</mapper>

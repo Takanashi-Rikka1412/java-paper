@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.dao.IArticleDao">
+    <select id="getArticle" parameterType="map" resultType="Article">
+        select * from article
+        where id = #{id}
+    </select>
+    <select id="getUserArticle" parameterType="map" resultType="Article">
+        select * from article
+        where publisher_id = #{id} and is_a_draft = 0
+    </select>
+    <select id="getUserDraft" parameterType="map" resultType="Article">
+        select * from article
+        where publisher_id = #{id} and is_a_draft = 1
+    </select>
+    <select id="getQuestionArticle" parameterType="map" resultType="Article">
+        select * from article
+        where is_a_draft = 0 and id=(select theme from article
+            where id = #{id})
+    </select>
+    <select id="getAnswerArticle" parameterType="map" resultType="Article">
+        select * from article
+        where is_a_draft = 0 and category='answer' and theme = #{id}
+    </select>
+    <update id="updateArticle" parameterType="map" >
+        update article
+        <set>
+            <if test="title!= null and title != ''">title = #{title},</if>
+            <if test="content!= null and content != ''">content = #{content},</if>
+            <if test="category!= null and category != ''">category = #{category},</if>
+            <if test="type!= null and type != ''">type = #{type},</if>
+            <if test="tabloid!= null and tabloid != ''">tabloid = #{tabloid},</if>
+            <if test="tag!= null and tag != ''">tag = #{tag},</if>
+            <if test="is_a_draft!= null and is_a_draft != ''">is_a_draft = #{is_a_draft},</if>
+            <if test="price!= null and price != ''">price = #{price}</if>
+        </set>
+        where id = #{id} and publisher_id = #{publisher_id}
+    </update>
+    <update id="updateArticleView" parameterType="map" >
+        update article set
+        page_view = page_view+1
+        where id = #{id}
+    </update>
+    <insert id="insertReadRecord" parameterType="map">
+        insert into read_article (user_id,article_id)
+        values (#{user_id},#{article_id})
+    </insert>
+    <insert id="insertArticle" parameterType="map">
+        <selectKey keyProperty="id" keyColumn="id" resultType="int" order="AFTER" >
+            select last_insert_id();
+        </selectKey>
+        insert into article (publisher_id,title,content,category,tabloid,tag,is_a_draft,type,publish_time,price,theme)
+        values (#{publisher_id},#{title},#{content},#{category},#{tabloid},#{tag},#{is_a_draft},#{type},#{publish_time},#{price},#{theme})
+    </insert>
+    <update id="updateDraft" parameterType="map" >
+        update article set
+        title = #{title},
+        content = #{content},
+        is_a_draft = #{is_a_draft}
+        where id = #{id} and publisher_id = #{publisher_id}
+    </update>
+    <insert id="insertDraft" parameterType="map">
+        <selectKey keyProperty="id" keyColumn="id" resultType="int" order="AFTER" >
+            select last_insert_id();
+        </selectKey>
+        insert into article (publisher_id,title,content,is_a_draft,publish_time,type,theme)
+        values (#{publisher_id},#{title},#{content},#{is_a_draft},#{publish_time},#{type},#{theme})
+    </insert>
+    <delete id="deleteArticle" parameterType="map">
+        delete from article
+        where id=#{id} and publisher_id=#{publisher_id}
+    </delete>
+    <select id="searchUserArticle" parameterType="map" resultType="Article">
+        select * from article
+        where publisher_id = #{userId} and is_a_draft = 0
+        and
+            (upper(title) like BINARY CONCAT('%',upper(#{key}),'%')
+        or
+            upper(content) like BINARY CONCAT('%',upper(#{key}),'%'))
+        order by
+            case
+                when upper(title) like BINARY CONCAT('%',upper(#{key}),'%')
+                    then length(REPLACE(upper(title),upper(#{key}),'')) * 1.0/length(title)
+                else 1
+                end,
+            case
+                when upper(content) like BINARY CONCAT('%',upper(#{key}),'%')
+                    then length(REPLACE(upper(content),upper(#{key}),'')) * 1.0 /length(content)
+                else 1
+                end
+    </select>
+    <select id="searchUserDraft" parameterType="map" resultType="Article">
+        select * from article
+        where publisher_id = #{userId} and is_a_draft = 1
+          and
+            (upper(title) like BINARY CONCAT('%',upper(#{key}),'%')
+                or
+                upper(content) like BINARY CONCAT('%',upper(#{key}),'%'))
+        order by
+            case
+                when upper(title) like BINARY CONCAT('%',upper(#{key}),'%')
+                    then length(REPLACE(upper(title),upper(#{key}),'')) * 1.0/length(title)
+                else 1
+                end,
+            case
+                when upper(content) like BINARY CONCAT('%',upper(#{key}),'%')
+                    then length(REPLACE(upper(content),upper(#{key}),'')) * 1.0 /length(content)
+                else 1
+                end
+    </select>
+</mapper>

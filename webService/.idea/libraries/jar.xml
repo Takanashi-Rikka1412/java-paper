@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jar">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../java-paper-master12-1/java-paper-master/jar" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../java-paper-master12-1/java-paper-master/jar" recursive="false" />
+  </library>
+</component>

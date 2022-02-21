@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.dao.ICommentDao">
+    <select id="getComment" parameterType="map" resultType="Comment">
+        select * from comment
+        where id = #{id}
+    </select>
+    <select id="getCommentByArticleId" parameterType="map" resultType="Comment">
+        select * from comment
+        where article_id = #{id} and level = #{level}
+    </select>
+    <select id="getUserReceiveComment" parameterType="map" resultType="Comment">
+        select * from comment
+        where subscriber_id = #{id} and publisher_id != #{id}
+        order by is_checked asc , publish_time desc
+    </select>
+    <select id="getUserToComment" parameterType="map" resultType="Comment">
+        select * from comment
+        where publisher_id = #{id}
+        order by publish_time desc
+    </select>
+    <insert id="insertComment" parameterType="map">
+        insert into comment (level,article_id,publisher_id,subscriber_id,content,publish_time,is_checked)
+        value (#{level},#{article_id},#{publisher_id},#{subscriber_id},#{content},#{publish_time},#{is_checked})
+    </insert>
+    <update id="updateAllCheck" parameterType="map">
+        update comment set
+        is_checked = 1
+        where subscriber_id = #{userId}
+    </update>
+    <update id="updateOneCheck" parameterType="map">
+        update comment set
+        is_checked = 1
+        where id=#{id}
+    </update>
+    <select id="searchToComment" parameterType="map" resultType="Comment">
+        select * from comment
+        where publisher_id = #{userId}
+        and upper(content) like BINARY CONCAT('%',upper(#{key}),'%')
+        order by
+            length(REPLACE(upper(content),upper(#{key}),'')) * 1.0 /length(content) asc,
+            publish_time desc
+    </select>
+    <select id="searchReceiveComment" parameterType="map" resultType="Comment">
+        select * from comment
+        where subscriber_id = #{userId} and publisher_id != #{userId}
+        and upper(content) like BINARY CONCAT('%',upper(#{key}),'%')
+        order by
+            length(REPLACE(upper(content),upper(#{key}),'')) * 1.0 /length(content) asc,
+            publish_time desc
+    </select>
+    <delete id="deleteComment" parameterType="map" >
+        delete from comment
+        where id=#{id} and publisher_id=#{publisher_id}
+    </delete>
+
+</mapper>
